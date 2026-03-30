@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>adesso BKK · hackYourBack · Versorgungssteuerung</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── adesso Design System ─────────────────────────────
+   Primary:   #0067B3  (adesso Blau)
+   Accent:    #A8CF38  (adesso Lime)
+   Dark:      #003057  (Deep Navy)
+   Surface:   #F0F4F8  (Light Blue-Grey)
+   Text:      #1A2332
+   Muted:     #6B7A8D
+   Border:    #D0DAE6
+   White:     #FFFFFF
+   Status OK:     #2E7D32
+   Status WARN:   #E65100
+   Status DANGER: #C62828
+──────────────────────────────────────────────────────── */
+:root {
+  --blue:    #0067B3;
+  --blue-dk: #003057;
+  --blue-lt: #E8F2FA;
+  --lime:    #A8CF38;
+  --lime-dk: #7A9E1A;
+  --lime-lt: #F2F8E6;
+  --bg:      #F0F4F8;
+  --surface: #FFFFFF;
+  --border:  #D0DAE6;
+  --text:    #1A2332;
+  --muted:   #6B7A8D;
+  --subtle:  #9AAAB8;
+  --ok:      #2E7D32;
+  --ok-lt:   #E8F5E9;
+  --warn:    #E65100;
+  --warn-lt: #FFF3E0;
+  --no:      #9AAAB8;
+  --no-lt:   #F5F7F9;
+  --danger:  #C62828;
+  --danger-lt:#FFEBEE;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ──────────────────────────────────── */
+.site-header {
+  background: var(--blue-dk);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+.header-logo-block {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 14px 32px 14px 0;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  margin-right: 32px;
+}
+.logo-adesso {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.logo-pipe {
+  display: inline-block;
+  width: 3px;
+  height: 28px;
+  background: var(--lime);
+  margin-left: 4px;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+.header-program {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 0;
+}
+.program-label {
+  font-size: 12px;
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.program-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+.program-sub {
+  font-size: 13px;
+  color: var(--lime);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.header-meta {
+  text-align: right;
+  font-size: 12px;
+  font-family: 'Source Code Pro', monospace;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+}
+.header-badge {
+  background: var(--lime);
+  color: var(--blue-dk);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  border-radius: 3px;
+}
+
+/* ─── MAIN LAYOUT ─────────────────────────────── */
+.page { max-width: 1440px; margin: 0 auto; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 28px; }
+
+/* ─── SECTION LABEL ───────────────────────────── */
+.sec-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.sec-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue-dk);
+}
+.sec-title::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 20px;
+  background: var(--lime);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.sec-tag {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: var(--blue-lt);
+  color: var(--blue);
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+.sec-tag.lime { background: var(--lime-lt); color: var(--lime-dk); border-color: #C8E070; }
+
+/* ─── CARD BASE ───────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.card-hdr {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+}
+.card-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.card-body { padding: 20px; }
+
+/* ─── GRID HELPERS ────────────────────────────── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.g21 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.g32 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+
+/* ─── 1. KERNINDIKATOREN ──────────────────────── */
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.kpi-card:hover { box-shadow: 0 4px 16px rgba(0,103,179,0.10); }
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--kc, var(--blue));
+}
+.kpi-label {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.kpi-row { display: flex; align-items: flex-end; justify-content: space-between; }
+.kpi-val {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--blue-dk);
+  line-height: 1;
+}
+.kpi-unit { font-size: 14px; color: var(--muted); margin-left: 2px; font-weight: 400; }
+.kpi-overlay { text-align: right; }
+.kpi-ko {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1;
+}
+.kpi-ko-lbl { font-family: 'Source Code Pro', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+.kpi-delta { margin-top: 8px; font-size: 12px; font-family: 'Source Code Pro', monospace; }
+.d-ok { color: var(--ok); } .d-warn { color: var(--warn); } .d-n { color: var(--muted); }
+.kpi-src { position: absolute; bottom: 8px; right: 12px; font-family: 'Source Code Pro', monospace; font-size: 10px; color: var(--border); }
+
+/* ─── 2. ROI KACHEL ───────────────────────────── */
+.roi-hero {
+  background: var(--blue-dk);
+  border-radius: 6px;
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+.roi-hero::before {
+  content: '';
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(168,207,56,0.08);
+  pointer-events: none;
+}
+.roi-item {
+  padding: 0 28px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.roi-item:first-child { padding-left: 0; }
+.roi-item:last-child { border-right: none; }
+.roi-item-label {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.roi-item-val {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--lime);
+}
+.roi-item-val.red { color: #FF8A65; }
+.roi-item-val.white { color: #fff; }
+.roi-item-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.4; }
+.roi-bar-wrap { margin-top: 8px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.roi-bar-fill { height: 100%; border-radius: 2px; background: var(--lime); transition: width 1.2s ease; }
+
+/* ─── 3. GOE TABELLE ──────────────────────────── */
+.goe-table { width: 100%; border-collapse: collapse; }
+.goe-table th {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 9px 14px;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+  font-weight: 500;
+  background: var(--bg);
+}
+.goe-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #EEF2F6;
+  vertical-align: middle;
+  font-size: 13px;
+}
+.goe-table tbody tr { cursor: pointer; transition: background 0.15s; }
+.goe-table tbody tr:hover { background: var(--blue-lt); }
+.goe-table tbody tr:last-child td { border-bottom: none; }
+.m-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.money { font-family: 'Source Code Pro', monospace; font-size: 14px; font-weight: 600; }
+.roi-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.roi-pos { background: var(--ok-lt); color: var(--ok); }
+.roi-neg { background: var(--danger-lt); color: var(--danger); }
+.delta-pill {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+.dp-ok { background: var(--ok-lt); color: var(--ok); }
+.dp-warn { background: var(--warn-lt); color: var(--warn); }
+.dp-no { background: var(--no-lt); color: var(--no); border: 1px solid var(--border); }
+.evid-bar { display: flex; align-items: center; gap: 6px; }
+.evid-track { width: 50px; height: 5px; background: var(--border); border-radius: 2px; overflow: hidden; flex-shrink: 0; }
+.evid-fill { height: 100%; border-radius: 2px; }
+
+/* ─── 4. ZIELKARTEN ───────────────────────────── */
+.ziel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  border-top: 4px solid var(--zc, var(--blue));
+}
+.ziel-icon { font-size: 26px; margin-bottom: 8px; }
+.ziel-name { font-size: 15px; font-weight: 700; color: var(--blue-dk); margin-bottom: 4px; }
+.ziel-target { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: 4px; border-left: 3px solid var(--zc, var(--blue)); }
+.ops-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.op-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--muted);
+  background: var(--bg); border-radius: 4px; padding: 5px 10px;
+}
+.op-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--zc, var(--blue)); flex-shrink: 0; }
+.op-src {
+  display: inline-block;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-left: 4px;
+}
+.op-src.w { background: var(--lime-lt); border-color: #C8E070; color: var(--lime-dk); }
+.op-src.e { background: var(--blue-lt); border-color: #A8C8E8; color: var(--blue); }
+.op-src.r { background: #F0F0F8; border-color: var(--border); color: var(--muted); }
+.ziel-gauge-wrap { margin-top: 6px; }
+.ziel-gauge-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.ziel-gauge-fill { height: 100%; border-radius: 4px; background: var(--zc, var(--blue)); transition: width 1.3s ease; }
+.ziel-gauge-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.ziel-pct { font-size: 24px; font-weight: 700; color: var(--zc, var(--blue)); line-height: 1; }
+.ziel-target-pct { font-family: 'Source Code Pro', monospace; font-size: 11px; color: var(--muted); }
+.status-chip { display: inline-block; padding: 3px 9px; border-radius: 3px; font-family: 'Source Code Pro', monospace; font-size: 11px; font-weight: 600; margin-top: 8px; }
+.sc-ok { background: var(--ok-lt); color: var(--ok); }
+.sc-warn { background: var(--warn-lt); color: var(--warn); }
+.sc-ko { background: var(--danger-lt); color: var(--danger); }
+
+/* ─── 5. AUSGABEN & MRSA ──────────────────────── */
+.sector-block {
+  background: var(--bg);
+  border-radius: 5px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.sector-block:last-child { margin-bottom: 0; }
+.sector-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.sector-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.sector-totals { display: flex; gap: 16px; }
+.s-tot { text-align: right; }
+.s-tot-val { font-family: 'Source Code Pro', monospace; font-size: 14px; font-weight: 600; }
+.s-tot-lbl { font-family: 'Source Code Pro', monospace; font-size: 10px; color: var(--muted); }
+.sitem { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.sitem:last-child { margin-bottom: 0; }
+.sitem-label { width: 200px; font-size: 12px; color: var(--muted); flex-shrink: 0; line-height: 1.3; }
+.sitem-track { flex: 1; height: 16px; background: rgba(0,0,0,0.06); border-radius: 3px; position: relative; overflow: hidden; }
+.sitem-gg { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 3px; transition: width 1.1s ease; }
+.sitem-ko { position: absolute; top: 3px; bottom: 3px; left: 0; border-radius: 2px; transition: width 1.1s ease; }
+.sitem-pcts { width: 72px; flex-shrink: 0; text-align: right; font-family: 'Source Code Pro', monospace; font-size: 11px; }
+
+/* morbiRSA */
+.mrsa-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.mrsa-item:last-child { margin-bottom: 0; }
+.mrsa-lbl { width: 140px; font-size: 12px; color: var(--muted); flex-shrink: 0; line-height: 1.3; }
+.mrsa-track { flex: 1; height: 18px; background: var(--bg); border-radius: 3px; position: relative; overflow: hidden; }
+.mrsa-gg { position: absolute; top: 0; left: 0; bottom: 0; background: var(--blue); opacity: 0.2; border-radius: 3px; transition: width 1.1s ease; }
+.mrsa-ko { position: absolute; top: 3px; bottom: 3px; left: 0; background: var(--blue); border-radius: 2px; transition: width 1.1s ease; }
+.mrsa-vals { width: 60px; text-align: right; flex-shrink: 0; }
+.mrsa-v-gg { font-family: 'Source Code Pro', monospace; font-size: 11px; color: var(--blue-dk); font-weight: 500; }
+.mrsa-v-ko { font-family: 'Source Code Pro', monospace; font-size: 11px; color: var(--blue); }
+
+/* ─── LEGEND BAND ─────────────────────────────── */
+.legend-band {
+  display: flex; gap: 20px; align-items: center;
+  padding: 10px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+.leg-swatch { width: 22px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.leg-div { width: 1px; height: 20px; background: var(--border); }
+
+/* ─── MODAL ───────────────────────────────────── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,30,60,0.55); z-index: 200; align-items: center; justify-content: center; }
+.overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 30px 32px;
+  max-width: 700px; width: 92%;
+  max-height: 88vh; overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,30,60,0.3);
+  position: relative;
+}
+.modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; line-height: 1; }
+.modal-title { font-size: 22px; font-weight: 700; color: var(--blue-dk); margin-bottom: 4px; }
+.modal-date { font-family: 'Source Code Pro', monospace; font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+.modal-kosten-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 18px; }
+.mk-card { background: var(--bg); border-radius: 5px; padding: 12px 14px; }
+.mk-lbl { font-family: 'Source Code Pro', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 5px; }
+.mk-val { font-size: 22px; font-weight: 700; line-height: 1; }
+.mk-sub { font-family: 'Source Code Pro', monospace; font-size: 11px; color: var(--muted); margin-top: 3px; }
+.modal-aufschluss { border-top: 1px solid var(--border); padding-top: 12px; margin-bottom: 18px; }
+.auf-title { font-family: 'Source Code Pro', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+.auf-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.auf-item { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; font-size: 12px; color: var(--text); }
+.modal-ziele { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+.mz-card { background: var(--bg); border-radius: 5px; padding: 12px; }
+.mz-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
+.mz-vals { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.mz-v { font-size: 18px; font-weight: 700; }
+.mz-arrow { color: var(--muted); }
+.mz-note { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 5px; }
+.anno { border-radius: 5px; padding: 10px 14px; font-size: 13px; display: flex; gap: 9px; align-items: flex-start; line-height: 1.5; }
+.anno-ok { background: var(--ok-lt); border: 1px solid #A5D6A7; color: var(--ok); }
+.anno-warn { background: var(--warn-lt); border: 1px solid #FFCC80; color: var(--warn); }
+
+/* ─── FOOTER ──────────────────────────────────── */
+.site-footer {
+  background: var(--blue-dk);
+  color: rgba(255,255,255,0.4);
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 14px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.footer-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.f-tag { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 3px; padding: 2px 8px; }
+.lime-text { color: var(--lime); }
+
+/* ─── ANIMATIONS ──────────────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+.kpi-card { animation: fadeUp .5s ease both; }
+.kpi-card:nth-child(1){animation-delay:.04s} .kpi-card:nth-child(2){animation-delay:.08s}
+.kpi-card:nth-child(3){animation-delay:.12s} .kpi-card:nth-child(4){animation-delay:.16s} /* changed to 3 */
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 1024px) {
+  .header-inner { padding: 0 20px; }
+  .page { padding: 24px 20px 40px; }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .g21, .g32 { grid-template-columns: 1fr; }
+  .roi-hero { grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px; }
+  .roi-item { border-right: none; padding: 0; }
+  .roi-item:last-child { grid-column: 1 / -1; }
+  .modal-kosten-grid { grid-template-columns: 1fr 1fr; }
+  .modal-ziele { grid-template-columns: 1fr 1fr; }
+  .sitem-label { width: 160px; }
+}
+
+@media (max-width: 768px) {
+  .header-inner { flex-wrap: wrap; padding: 0 16px; gap: 0; }
+  .header-logo-block { border-right: none; margin-right: 0; padding: 12px 16px 12px 0; }
+  .header-program { padding: 8px 0 12px; }
+  .header-right { width: 100%; padding: 0 0 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px; }
+  .header-meta { text-align: left; font-size: 11px; }
+  .page { padding: 16px 14px 32px; gap: 20px; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .g21, .g32 { grid-template-columns: 1fr; }
+  .roi-hero { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
+  .roi-item { border-right: none; padding: 0; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px; }
+  .roi-item:last-child { border-bottom: none; padding-bottom: 0; grid-column: auto; }
+  .roi-item-val { font-size: 30px; }
+  .kpi-val { font-size: 26px; }
+  .legend-band { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
+  .leg-div { width: 100%; height: 1px; }
+  
+  /* Scrollable tables */
+  .card-body { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .goe-table { min-width: 700px; }
+  #ops-table { min-width: 600px; }
+  
+  .modal { padding: 20px; width: 96%; max-height: 92vh; }
+  .modal-kosten-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modal-ziele { grid-template-columns: 1fr; }
+  .mk-val { font-size: 18px; }
+  
+  .sitem { flex-wrap: wrap; }
+  .sitem-label { width: 100%; margin-bottom: 2px; }
+  .sitem-pcts { width: 100%; text-align: left; display: flex; gap: 12px; }
+  
+  .mrsa-item { flex-wrap: wrap; }
+  .mrsa-lbl { width: 100%; margin-bottom: 2px; }
+  .mrsa-vals { width: 100%; text-align: left; display: flex; gap: 12px; }
+  
+  .sector-totals { flex-direction: column; gap: 4px; }
+  .s-tot { text-align: left; display: flex; gap: 8px; align-items: center; }
+  
+  .site-footer { flex-direction: column; align-items: flex-start; padding: 14px 16px; }
+  .footer-tags { flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  body { font-size: 14px; }
+  .logo-adesso { font-size: 22px; }
+  .program-name { font-size: 14px; }
+  .header-right { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .sec-title { font-size: 16px; }
+  .kpi-val { font-size: 24px; }
+  .kpi-ko { font-size: 18px; }
+  .roi-item-val { font-size: 26px; }
+  .modal-kosten-grid { grid-template-columns: 1fr; }
+  .mk-val { font-size: 16px; }
+  .ziel-pct { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo-block">
+      <div class="logo-adesso">adesso<span class="logo-pipe"></span></div>
+    </div>
+    <div class="header-program">
+      <div class="program-label">adesso BKK · §140a SGB V</div>
+      <div class="program-name">hackYourBack</div>
+      <div class="program-sub">Coaching · Rückenfitness für Entwickler:innen</div>
+    </div>
+    <div class="header-right">
+      <div class="header-meta">
+        Versorgungssteuerung · Routinedatenanalyse<br>
+        Berichtszeitraum 2023–2025 · n = 847 Kohorte
+      </div>
+      <div class="header-badge">Dashboard</div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ─── LEGENDE ─────────────────────────────── -->
+  <div class="legend-band">
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--blue-dk);opacity:.7"></div><strong style="color:var(--text)">Grundgesamtheit</strong> adesso BKK · n = 11.247</div>
+    <div class="leg-div"></div>
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--blue)"></div><strong style="color:var(--text)">hackYourBack-Kohorte</strong> §140a · n = 847</div>
+    <div class="leg-div"></div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#7c3aed;border-radius:50%;width:10px;height:10px"></div>Awareness-Kampagne</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#b45309;border-radius:50%;width:10px;height:10px"></div>Fitness-Gutscheine</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--lime-dk);border-radius:50%;width:10px;height:10px"></div>Coaching-Programm</div>
+    <div class="leg-div"></div>
+    <div class="leg-item" style="font-family:'Source Code Pro',monospace;font-size:11px;color:var(--muted)">Alle Werte illustrativ · Datenstand 03/2025</div>
+  </div>
+
+  <!-- ═══ 1. KERNINDIKATOREN ════════════════════ -->
+  <div>
+    <div class="sec-label"><div class="sec-title">Kernindikatoren</div><span class="sec-tag">GG + hackYourBack · 2025</span></div>
+    <div class="g3">
+
+      <div class="kpi-card" style="--kc:var(--blue-dk)">
+        <div class="kpi-label">Versicherte</div>
+        <div class="kpi-row">
+          <div><div class="kpi-val">11.247</div><div class="kpi-delta d-ok">▲ +1,8 % vs. Vorjahr</div></div>
+          <div class="kpi-overlay"><div class="kpi-ko">847</div><div class="kpi-ko-lbl">Kohorte · 7,5 % der GG</div></div>
+        </div>
+        <div class="kpi-src">Stammdaten</div>
+      </div>
+
+      <div class="kpi-card" style="--kc:var(--warn)">
+        <div class="kpi-label">Ø Ausgaben / Versicherten</div>
+        <div class="kpi-row">
+          <div><div class="kpi-val">3.108<span class="kpi-unit">€</span></div><div class="kpi-delta d-warn">▲ +3,9 % vs. Vorjahr</div></div>
+          <div class="kpi-overlay"><div class="kpi-ko">4.620<span style="font-size:11px;color:var(--muted)">€</span></div><div class="kpi-ko-lbl">Kohorte · +48 % vs. GG</div></div>
+        </div>
+        <div class="kpi-src">§295 · §300 · §301</div>
+      </div>
+
+      <div class="kpi-card" style="--kc:var(--lime-dk)">
+        <div class="kpi-label">DMP-Einschreibequote</div>
+        <div class="kpi-row">
+          <div><div class="kpi-val">67,2<span class="kpi-unit">%</span></div><div class="kpi-delta d-ok">▲ +3,1 pp vs. Vorjahr</div></div>
+          <div class="kpi-overlay"><div class="kpi-ko">1,31<span style="font-size:11px;color:var(--muted)">×</span></div><div class="kpi-ko-lbl">Ø AGS-Faktor Kohorte</div></div>
+        </div>
+        <div class="kpi-src">morbiRSA</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ 2. ROI KACHEL ════════════════════════ -->
+  <div>
+    <div class="sec-label"><div class="sec-title">Return on Investment · hackYourBack</div><span class="sec-tag lime">§140a · Gesundheitsökonomie</span></div>
+    <div class="roi-hero">
+      <div class="roi-item">
+        <div class="roi-item-label">Gesamtkosten Programm</div>
+        <div class="roi-item-val white">305.850 <span style="font-size:20px">€</span></div>
+        <div class="roi-item-sub">Alle Maßnahmen 2023–2025<br>Ø 361 € pro Kohorte-Mitglied</div>
+        <div class="roi-bar-wrap"><div class="roi-bar-fill" style="width:60%;background:rgba(255,255,255,0.3)"></div></div>
+      </div>
+      <div class="roi-item">
+        <div class="roi-item-label">Erzielte Einsparungen</div>
+        <div class="roi-item-val">297.297 <span style="font-size:20px">€</span></div>
+        <div class="roi-item-sub">Reduktion Arzneimittel, Heilmittel,<br>stat. Fälle · Ø 351 € / Kopf</div>
+        <div class="roi-bar-wrap"><div class="roi-bar-fill" style="width:58%"></div></div>
+      </div>
+      <div class="roi-item">
+        <div class="roi-item-label">Bester Einzel-ROI · Coaching</div>
+        <div class="roi-item-val">+ 55 <span style="font-size:20px">%</span></div>
+        <div class="roi-item-sub">Einsparung 312 € vs. Kosten 201 €<br>pro Kopf · Evidenzstärke 94 %</div>
+        <div class="roi-bar-wrap"><div class="roi-bar-fill" style="width:55%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 3. GÖ EVALUATION ══════════════════════ -->
+  <div>
+    <div class="sec-label"><div class="sec-title">Gesundheitsökonomische Evaluation</div><span class="sec-tag">Maßnahmenvergleich · Klick = Detail</span></div>
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">Kosten · Einsparung · ROI · Wirkung je Zielgröße</div><div class="card-sub">Alle drei Maßnahmen · n = 847 · Kosten pro Kopf · Einsparung aus §295/§300/§301</div></div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="goe-table" id="goe-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 4. PROGRAMMZIELE ══════════════════════ -->
+  <div>
+    <div class="sec-label"><div class="sec-title">Programmziele &amp; Operationalisierung</div><span class="sec-tag lime">ePROMs · Wearables · Routinedaten</span></div>
+    <div class="g3" id="ziel-cards"></div>
+    <!-- OPS TABLE -->
+    <div class="card" style="margin-top:14px">
+      <div class="card-hdr"><div><div class="card-title">Operationalisierung der Zielgrößen</div><div class="card-sub">Messinstrument · Datenquelle · Schwellenwert · Frequenz · Datenintegration</div></div></div>
+      <div class="card-body" style="padding:0">
+        <table style="width:100%;border-collapse:collapse" id="ops-table">
+          <thead><tr>
+            <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Ziel</th>
+            <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Messinstrument</th>
+            <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Datenquelle</th>
+            <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Schwellenwert / Trigger</th>
+            <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Frequenz</th>
+          </tr></thead>
+          <tbody id="ops-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 5. AUSGABEN + MRSA ════════════════════ -->
+  <div>
+    <div class="sec-label"><div class="sec-title">Leistungsausgaben nach Sektor &amp; morbiRSA-Profil</div><span class="sec-tag">§295 · §300 · §301 · morbiRSA · GG + Kohorte</span></div>
+    <div class="g2">
+
+      <!-- AUSGABEN -->
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">Leistungsausgaben nach Sektor · Top-Diagnosegruppen</div><div class="card-sub">Ø pro Versicherten · Anteil am Sektor · GG (hell) vs. Kohorte (dunkel)</div></div></div>
+        <div class="card-body" id="ausgaben-body"></div>
+      </div>
+
+      <!-- morbiRSA -->
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">morbiRSA-Profil · Top-HMG</div><div class="card-sub">Versichertenanteil mit HMG · GG vs. hackYourBack-Kohorte</div></div></div>
+        <div class="card-body">
+          <div id="mrsa-rows"></div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+            <svg viewBox="0 0 280 82" style="width:100%;height:72px">
+              <text x="70" y="11" text-anchor="middle" fill="#6B7A8D" font-size="8" font-family="Source Code Pro">GG · Ø HMG / Vers.</text>
+              <circle cx="70" cy="50" r="27" fill="none" stroke="#E8F2FA" stroke-width="8"/>
+              <circle cx="70" cy="50" r="27" fill="none" stroke="#003057" stroke-width="8" stroke-dasharray="102 68" stroke-dashoffset="34" stroke-linecap="round"/>
+              <text x="70" y="46" text-anchor="middle" fill="#003057" font-size="14" font-weight="700" font-family="Source Sans 3">2,8</text>
+              <text x="70" y="58" text-anchor="middle" fill="#6B7A8D" font-size="7" font-family="Source Code Pro">HMG / Vers.</text>
+              <text x="210" y="11" text-anchor="middle" fill="#6B7A8D" font-size="8" font-family="Source Code Pro">Kohorte · Ø HMG / Vers.</text>
+              <circle cx="210" cy="50" r="27" fill="none" stroke="#E8F2FA" stroke-width="8"/>
+              <circle cx="210" cy="50" r="27" fill="none" stroke="#0067B3" stroke-width="8" stroke-dasharray="124 45" stroke-dashoffset="34" stroke-linecap="round"/>
+              <text x="210" y="46" text-anchor="middle" fill="#0067B3" font-size="14" font-weight="700" font-family="Source Sans 3">4,6</text>
+              <text x="210" y="58" text-anchor="middle" fill="#6B7A8D" font-size="7" font-family="Source Code Pro">HMG / Vers.</text>
+            </svg>
+          </div>
+          <div style="margin-top:12px;background:var(--blue-lt);border:1px solid #A8C8E8;border-radius:5px;padding:10px 13px;font-size:10px;color:var(--blue);display:flex;gap:8px">
+            <span style="flex-shrink:0">💡</span>
+            <span>Kohorte weist erhöhte Multimorbidität auf. HMG 203 MSK + komorbide Depression (F3x) bei 29 % der Teilnehmer:innen — Schmerz-Psyche-Wechselwirkung relevant für Programmdesign.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div>adesso BKK · <span class="lime-text">hackYourBack</span> · §140a SGB V · Versorgungssteuerung · Berichtszeitraum 2023–2025</div>
+  <div class="footer-tags">
+    <span class="f-tag">§295 SGB V</span><span class="f-tag">§300 SGB V</span><span class="f-tag">§301 SGB V</span>
+    <span class="f-tag">morbiRSA</span><span class="f-tag">§140a</span><span class="f-tag">ePROMs</span><span class="f-tag">Wearables</span>
+  </div>
+  <div>Alle Werte illustrativ · Datenstand 03/2025</div>
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-date" id="modal-date"></div>
+    <div class="modal-kosten-grid" id="modal-kosten"></div>
+    <div class="modal-aufschluss">
+      <div class="auf-title">Kostenaufschlüsselung</div>
+      <div class="auf-items" id="modal-auf"></div>
+      <div style="margin-top:8px;font-size:10px;color:var(--muted)" id="modal-quelle"></div>
+    </div>
+    <div class="modal-ziele" id="modal-ziele"></div>
+    <div id="modal-hinweis"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const massnahmen = [
+  {
+    id:'m1', icon:'📣', title:'Awareness-Kampagne',
+    titleFull:'Awareness-Kampagne: Rückengesundheit für Devs',
+    date:'Feb 2023', color:'#7c3aed', lt:'#ede9fe',
+    kosten: { proKopf:9.93, gesamt:8400,
+      aufschluss:['Konzeption & Texte: 4.200 €','E-Mail & App-Push: 800 €','Design/Grafik: 2.400 €','Projektkoordination: 1.000 €'] },
+    einsparung: { proKopf:31, gesamt:26257,
+      quelle:'Reduktion Schmerzmittel-DDD §300 + weniger Arztbesuche §295' },
+    ziele:[
+      {name:'🦴 Schmerz', vorher:'5,8', nachher:'5,1', delta:'−0,7 NRS', typ:'warn', note:'Leichter Rückgang. Kausalität begrenzt nachweisbar.'},
+      {name:'⚖️ Gewicht', vorher:'61 %', nachher:'66 %', delta:'+5 pp', typ:'ok', note:'Moderate Wirkung durch Ernährungstipps in Mails.'},
+      {name:'🚶 Bewegung', vorher:'31 %', nachher:'37 %', delta:'+6 pp', typ:'ok', note:'Messbarer Effekt durch Schrittzähler-Challenge.'},
+    ],
+    evidence:62,
+    hinweis:{ok:true, text:'Günstigste Maßnahme mit positivem ROI (+212 %). Empfehlung: jährliche Wiederholung als Basis-Maßnahme.'}
+  },
+  {
+    id:'m2', icon:'🎟️', title:'Fitness-Gutscheine',
+    titleFull:'Fitness-Gutscheine · Präventionsbonus §20 SGB V',
+    date:'Jun 2024', color:'#b45309', lt:'#fef3c7',
+    kosten: { proKopf:150, gesamt:127050,
+      aufschluss:['Gutscheinwert §20: 150 €/Vers.','Verwaltung & Portal: 5.000 €','Einlösequote: 78 %','Effektiver Betrag: ~122.050 €'] },
+    einsparung: { proKopf:8, gesamt:6776,
+      quelle:'Geringe Reduktion Heilmittelverordnungen — kein signif. Effekt auf Schmerzmittel oder stat. Fälle' },
+    ziele:[
+      {name:'🦴 Schmerz', vorher:'5,1', nachher:'5,0', delta:'−0,1 NRS', typ:'no', note:'Kein messbarer Effekt trotz hoher Einlösequote.'},
+      {name:'⚖️ Gewicht', vorher:'66 %', nachher:'67 %', delta:'+1 pp', typ:'no', note:'Keine nennenswerte Veränderung.'},
+      {name:'🚶 Bewegung', vorher:'37 %', nachher:'39 %', delta:'+2 pp', typ:'no', note:'Im Bereich des natürlichen Trends — kein kausaler Nachweis.'},
+    ],
+    evidence:28,
+    hinweis:{ok:false, text:'Negativbefund: Hohe Kosten (150 €/Kopf) ohne nachweisbare Wirkung. Empfehlung: Budget in Coaching-Programm umleiten.'}
+  },
+  {
+    id:'m3', icon:'🏋️', title:'Coaching-Programm',
+    titleFull:'Coaching-Programm · strukturiert 12 Wochen',
+    date:'Mär 2025', color:'#7A9E1A', lt:'#F2F8E6',
+    kosten: { proKopf:201, gesamt:170400,
+      aufschluss:['Coach-Honorar (12×60 min): 144.000 €','App-Lizenz & Übungsprogramm: 18.000 €','Casemanagement: 8.400 €','Evaluation & ePROMs: 6.000 €'] },
+    einsparung: { proKopf:312, gesamt:264264,
+      quelle:'Reduktion stat. Fälle §301 (−18 %), Schmerzmittel §300 (−24 % DDD), weniger Physio-Folgebehandlungen' },
+    ziele:[
+      {name:'🦴 Schmerz', vorher:'4,4', nachher:'3,7', delta:'−0,7 NRS', typ:'ok', note:'Stärkste Wirkung aller Maßnahmen. NRS nähert sich Zielwert ≤ 3.'},
+      {name:'⚖️ Gewicht', vorher:'73 %', nachher:'79 %', delta:'+6 pp', typ:'warn', note:'Positiver Nebeneffekt — nicht primäres Programmziel.'},
+      {name:'🚶 Bewegung', vorher:'46 %', nachher:'54 %', delta:'+8 pp', typ:'ok', note:'Heimübungen direkt im Schrittzähler nachweisbar.'},
+    ],
+    evidence:94,
+    hinweis:{ok:true, text:'Höchste Evidenz und bester ROI: +55 % (312 € Einsparung vs. 201 € Kosten pro Kopf). Empfehlung: Ausweitung auf alle Kohorte-Mitglieder mit NRS ≥ 5.'}
+  },
+];
+
+const ziele = [
+  {
+    icon:'🦴', name:'Schmerzreduktion', zc:'#0067B3',
+    target:'Keine / geringe Rückenschmerzen in den letzten 12 Monaten (NRS ≤ 3)',
+    ops:[
+      {txt:'NRS Schmerzskala (0–10)', src:'e', srcLabel:'ePROM App', freq:'monatlich'},
+      {txt:'PROMIS-29 Schmerz-Interferenz', src:'e', srcLabel:'ePROM App', freq:'quartalsweise'},
+      {txt:'Analgetika ATC N02 · Verordnungen', src:'r', srcLabel:'§300 Routinedaten', freq:'quartalsweise'},
+    ],
+    pct:63, ziel:75, status:'warn', statusTxt:'in Entwicklung'
+  },
+  {
+    icon:'⚖️', name:'Gewichtsstabilität', zc:'#2E7D32',
+    target:'Gewichtsveränderung ≤ ±5 % des Ausgangsgewichts über 12 Monate',
+    ops:[
+      {txt:'Körpergewicht via smarte Waage', src:'w', srcLabel:'Wearable', freq:'wöchentlich'},
+      {txt:'BMI-Dokumentation GOP 01732', src:'r', srcLabel:'§295 Routinedaten', freq:'quartalsweise'},
+      {txt:'Selbstauskunft (Fallback)', src:'e', srcLabel:'ePROM App', freq:'monatlich'},
+    ],
+    pct:79, ziel:80, status:'ok', statusTxt:'auf Kurs'
+  },
+  {
+    icon:'🚶', name:'Regelmäßige Bewegung', zc:'#003057',
+    target:'≥ 7.000 Schritte/Tag (4-Wo-Ø) oder ≥ 150 Min. moderate Aktivität/Woche',
+    ops:[
+      {txt:'Schrittzähler Smartphone Health-App', src:'w', srcLabel:'Wearable', freq:'täglich'},
+      {txt:'Aktive Minuten / Herzfrequenz', src:'w', srcLabel:'Smartwatch', freq:'täglich'},
+      {txt:'IPAQ-SF Selbstauskunft', src:'e', srcLabel:'ePROM App', freq:'quartalsweise'},
+    ],
+    pct:54, ziel:70, status:'ko', statusTxt:'Handlungsbedarf'
+  },
+];
+
+const opsRows = [
+  {ziel:'🦴 Schmerz', zc:'#0067B3', instrument:'NRS (0–10 Skala)', src:'e', srcLbl:'ePROM App', schwelle:'NRS ≤ 3 = Ziel · ≥ 7 = Eskalation', freq:'monatlich'},
+  {ziel:'🦴 Schmerz', zc:'#0067B3', instrument:'PROMIS-29 Schmerz', src:'e', srcLbl:'ePROM App', schwelle:'T-Score < 55 = Ziel erreicht', freq:'quartalsweise'},
+  {ziel:'🦴 Schmerz', zc:'#0067B3', instrument:'ATC N02 Schmerzmittel', src:'r', srcLbl:'§300 Routinedaten', schwelle:'DDD-Reduktion > 20 %', freq:'quartalsweise'},
+  {ziel:'⚖️ Gewicht', zc:'#2E7D32', instrument:'Körpergewicht (kg)', src:'w', srcLbl:'Wearable Waage', schwelle:'Δ ≤ ±5 % = Ziel · >5 % = Coaching-Trigger', freq:'wöchentlich'},
+  {ziel:'⚖️ Gewicht', zc:'#2E7D32', instrument:'BMI §295 GOP 01732', src:'r', srcLbl:'§295 Routinedaten', schwelle:'BMI-Verlauf stabil ±5 %', freq:'quartalsweise'},
+  {ziel:'🚶 Bewegung', zc:'#003057', instrument:'Schritte/Tag', src:'w', srcLbl:'Smartphone Health-App', schwelle:'≥ 7.000/Tag · < 5.000 = Interventions-Trigger', freq:'täglich'},
+  {ziel:'🚶 Bewegung', zc:'#003057', instrument:'Aktive Minuten / HR', src:'w', srcLbl:'Smartwatch', schwelle:'≥ 150 Min. mod. Aktivität/Woche (WHO)', freq:'täglich'},
+  {ziel:'🚶 Bewegung', zc:'#003057', instrument:'IPAQ-SF', src:'e', srcLbl:'ePROM App', schwelle:'≥ 600 MET-min/Woche', freq:'quartalsweise'},
+];
+
+const sektorItems = {
+  stat:{ name:'🏥 Stationär (§301)', ggTotal:'1.180 €', koTotal:'1.920 €', color:'#003057',
+    items:[
+      {label:'Bandscheibenvorfall (M51)', gg:28, ko:42},
+      {label:'Rücken-OP / Spondylodese (M48)', gg:18, ko:31},
+      {label:'Stütz-/Bewegungsapp. sonstige', gg:12, ko:14},
+    ]},
+  arznei:{ name:'💊 Arzneimittel (§300)', ggTotal:'680 €', koTotal:'890 €', color:'#0067B3',
+    items:[
+      {label:'Analgetika Nicht-Opioid (ATC N02BB/BE)', gg:22, ko:38},
+      {label:'Muskelrelaxantien (ATC M03)', gg:8, ko:19},
+      {label:'NSAR topisch/systemisch (ATC M01A)', gg:14, ko:24},
+    ]},
+  hm:{ name:'🤸 Heilmittel', ggTotal:'210 €', koTotal:'680 €', color:'#7A9E1A',
+    items:[
+      {label:'Physiotherapie (Massagen, KG)', gg:11, ko:54},
+      {label:'Krankengymnastik gerätegestützt', gg:5, ko:22},
+      {label:'Manuelle Therapie', gg:3, ko:13},
+    ]},
+};
+
+const mrsaData = [
+  {hmg:'HMG 203 · MSK chronisch', gg:12, ko:88},
+  {hmg:'HMG 019 · Diabetes T2', gg:18, ko:34},
+  {hmg:'HMG 130 · Depression F3x', gg:14, ko:29},
+  {hmg:'HMG 085 · Herzinsuffizienz', gg:11, ko:18},
+  {hmg:'HMG 046 · COPD / Asthma', gg:9, ko:14},
+];
+
+// ═══════════════════════════════════════════════════════════
+// RENDER GÖ TABELLE
+// ═══════════════════════════════════════════════════════════
+const dpMap = {ok:'dp-ok', warn:'dp-warn', no:'dp-no'};
+const goetbl = document.getElementById('goe-table');
+goetbl.innerHTML = `<thead><tr>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Maßnahme</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Kosten / Kopf</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Einsparung / Kopf</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">ROI</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">🦴 Schmerz</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">⚖️ Gewicht</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">🚶 Bewegung</th>
+  <th style="font-family:'Source Code Pro',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg)">Evidenz</th>
+</tr></thead><tbody>${massnahmen.map(m=>{
+  const roi = Math.round((m.einsparung.proKopf - m.kosten.proKopf)/m.kosten.proKopf*100);
+  const roiPos = roi > 0;
+  return `<tr onclick="showModal('${m.id}')">
+    <td><span class="m-badge" style="background:${m.lt};color:${m.color};border-color:${m.color}40">${m.icon} ${m.title}</span></td>
+    <td><span class="money" style="color:${m.color}">${m.kosten.proKopf.toLocaleString('de-DE',{minimumFractionDigits:0})} €</span></td>
+    <td><span class="money" style="color:var(--ok)">${m.einsparung.proKopf} €</span></td>
+    <td><span class="roi-pill ${roiPos?'roi-pos':'roi-neg'}">${roiPos?'+':''}${roi} %</span></td>
+    ${m.ziele.map(z=>`<td><span class="delta-pill ${dpMap[z.typ]}">${z.delta}</span></td>`).join('')}
+    <td>
+      <div class="evid-bar">
+        <div class="evid-track"><div class="evid-fill" style="width:${m.evidence}%;background:${m.color}"></div></div>
+        <span style="font-family:'Source Code Pro',monospace;font-size:11px;color:${m.color};font-weight:600">${m.evidence}%</span>
+      </div>
+    </td>
+  </tr>`;
+}).join('')}</tbody>`;
+
+// ═══════════════════════════════════════════════════════════
+// RENDER ZIELKARTEN
+// ═══════════════════════════════════════════════════════════
+const zcContainer = document.getElementById('ziel-cards');
+const scMap = {ok:'sc-ok', warn:'sc-warn', ko:'sc-ko'};
+ziele.forEach(z=>{
+  zcContainer.innerHTML += `
+    <div class="ziel-card" style="--zc:${z.zc}">
+      <div class="ziel-icon">${z.icon}</div>
+      <div class="ziel-name">${z.name}</div>
+      <div class="ziel-target">${z.target}</div>
+      <div class="ops-list">${z.ops.map(o=>`
+        <div class="op-item">
+          <div class="op-dot"></div>
+          ${o.txt} <span class="op-src ${o.src}">${o.srcLabel}</span>
+        </div>`).join('')}
+      </div>
+      <div class="ziel-gauge-wrap">
+        <div class="ziel-gauge-track"><div class="ziel-gauge-fill" style="width:${z.pct}%"></div></div>
+      </div>
+      <div class="ziel-gauge-row">
+        <div class="ziel-pct" style="color:${z.zc}">${z.pct}<span style="font-size:14px">%</span></div>
+        <div class="ziel-target-pct">Ziel: ${z.ziel} %</div>
+      </div>
+      <span class="status-chip ${scMap[z.status]}">${z.statusTxt}</span>
+    </div>`;
+});
+
+// ═══════════════════════════════════════════════════════════
+// RENDER OPS TABLE
+// ═══════════════════════════════════════════════════════════
+const srcStyle = {w:'background:#F2F8E6;border:1px solid #C8E070;color:#7A9E1A', e:'background:#E8F2FA;border:1px solid #A8C8E8;color:#0067B3', r:'background:#F5F7F9;border:1px solid #D0DAE6;color:#6B7A8D'};
+const opsBody = document.getElementById('ops-body');
+let lastZiel = '';
+opsRows.forEach(r=>{
+  const zielCell = r.ziel !== lastZiel
+    ? `<td rowspan="${opsRows.filter(x=>x.ziel===r.ziel).length}" style="font-weight:700;color:${r.zc};border-right:3px solid ${r.zc};padding:9px 14px;vertical-align:top;border-bottom:1px solid #EEF2F6;font-size:13px">${r.ziel}</td>`
+    : '';
+  if(r.ziel !== lastZiel) lastZiel = r.ziel;
+  opsBody.innerHTML += `<tr>
+    ${zielCell}
+    <td style="padding:9px 14px;border-bottom:1px solid #EEF2F6;font-size:13px">${r.instrument}</td>
+    <td style="padding:9px 14px;border-bottom:1px solid #EEF2F6"><span style="font-family:'Source Code Pro',monospace;font-size:10px;padding:2px 7px;border-radius:3px;${srcStyle[r.src]}">${r.srcLbl}</span></td>
+    <td style="padding:9px 14px;border-bottom:1px solid #EEF2F6;font-family:'Source Code Pro',monospace;font-size:12px;color:var(--text)">${r.schwelle}</td>
+    <td style="padding:9px 14px;border-bottom:1px solid #EEF2F6;font-family:'Source Code Pro',monospace;font-size:10px;color:var(--muted)">${r.freq}</td>
+  </tr>`;
+});
+
+// ═══════════════════════════════════════════════════════════
+// RENDER AUSGABEN
+// ═══════════════════════════════════════════════════════════
+const ausgBody = document.getElementById('ausgaben-body');
+Object.values(sektorItems).forEach(s=>{
+  const max = Math.max(...s.items.map(i=>i.ko));
+  ausgBody.innerHTML += `
+    <div class="sector-block">
+      <div class="sector-hdr">
+        <div class="sector-name">${s.name}</div>
+        <div class="sector-totals">
+          <div class="s-tot"><div class="s-tot-val" style="color:${s.color};opacity:.6">${s.ggTotal}</div><div class="s-tot-lbl">GG / Vers.</div></div>
+          <div class="s-tot"><div class="s-tot-val" style="color:${s.color}">${s.koTotal}</div><div class="s-tot-lbl">Kohorte / Vers.</div></div>
+        </div>
+      </div>
+      ${s.items.map(i=>`
+        <div class="sitem">
+          <div class="sitem-label">${i.label}</div>
+          <div class="sitem-track">
+            <div class="sitem-gg" style="background:${s.color};opacity:.25;width:0%" data-t="${(i.gg/max*100).toFixed(0)}"></div>
+            <div class="sitem-ko" style="background:${s.color};width:0%" data-t="${(i.ko/max*100).toFixed(0)}"></div>
+          </div>
+          <div class="sitem-pcts">
+            <div style="color:${s.color};opacity:.7">${i.gg} %</div>
+            <div style="color:${s.color};font-weight:600">${i.ko} %</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+});
+
+// ═══════════════════════════════════════════════════════════
+// RENDER morbiRSA
+// ═══════════════════════════════════════════════════════════
+const mrsaContainer = document.getElementById('mrsa-rows');
+mrsaData.forEach(d=>{
+  mrsaContainer.innerHTML += `
+    <div class="mrsa-item">
+      <div class="mrsa-lbl">${d.hmg}</div>
+      <div class="mrsa-track">
+        <div class="mrsa-gg" style="width:0%" data-t="${d.gg}"></div>
+        <div class="mrsa-ko" style="width:0%" data-t="${d.ko}"></div>
+      </div>
+      <div class="mrsa-vals">
+        <div class="mrsa-v-gg">${d.gg} %</div>
+        <div class="mrsa-v-ko">${d.ko} %</div>
+      </div>
+    </div>`;
+});
+
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+function showModal(id) {
+  const m = massnahmen.find(x=>x.id===id);
+  if(!m) return;
+  const roi = Math.round((m.einsparung.proKopf - m.kosten.proKopf)/m.kosten.proKopf*100);
+  const roiPos = roi > 0;
+  document.getElementById('modal-title').innerHTML = `<span style="margin-right:8px">${m.icon}</span>${m.titleFull}`;
+  document.getElementById('modal-date').innerHTML = `<span style="background:${m.lt};color:${m.color};padding:2px 10px;border-radius:3px;border:1px solid ${m.color}40;font-weight:600">${m.date}</span>`;
+  document.getElementById('modal-kosten').innerHTML = [
+    {lbl:'Kosten / Kopf', val:`${m.kosten.proKopf.toLocaleString('de-DE',{minimumFractionDigits:0})} €`, color:m.color, sub:`= ${m.kosten.gesamt.toLocaleString('de-DE')} € gesamt`},
+    {lbl:'Einsparung / Kopf', val:`${m.einsparung.proKopf} €`, color:'#2E7D32', sub:`= ${m.einsparung.gesamt.toLocaleString('de-DE')} € gesamt`},
+    {lbl:'ROI', val:`${roiPos?'+':''}${roi} %`, color:roiPos?'#2E7D32':'#C62828', sub:roiPos?'Einsparung > Kosten':'⚠ Kosten > Einsparung'},
+    {lbl:'Evidenzstärke', val:`${m.evidence} %`, color:m.color, sub:'Kausalitätsnachweis'},
+  ].map(k=>`<div class="mk-card"><div class="mk-lbl">${k.lbl}</div><div class="mk-val" style="color:${k.color}">${k.val}</div><div class="mk-sub">${k.sub}</div></div>`).join('');
+  document.getElementById('modal-auf').innerHTML = m.kosten.aufschluss.map(a=>`<span class="auf-item">${a}</span>`).join('');
+  document.getElementById('modal-quelle').innerHTML = `<strong style="color:var(--text)">Einsparungsquelle:</strong> ${m.einsparung.quelle}`;
+  document.getElementById('modal-ziele').innerHTML = m.ziele.map(z=>`
+    <div class="mz-card">
+      <div class="mz-title">${z.name}</div>
+      <div class="mz-vals">
+        <div class="mz-v" style="color:var(--muted)">${z.vorher}</div>
+        <div class="mz-arrow">→</div>
+        <div class="mz-v" style="color:${m.color}">${z.nachher}</div>
+      </div>
+      <span class="delta-pill ${dpMap[z.typ]}">${z.delta}</span>
+      <div class="mz-note">${z.note}</div>
+    </div>`).join('');
+  document.getElementById('modal-hinweis').innerHTML = `
+    <div class="anno ${m.hinweis.ok?'anno-ok':'anno-warn'}">
+      <span>${m.hinweis.ok?'✓':'⚠'}</span><div>${m.hinweis.text}</div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+document.getElementById('modal-close').onclick = ()=>document.getElementById('overlay').classList.remove('open');
+document.getElementById('overlay').onclick = e=>{ if(e.target===e.currentTarget) e.currentTarget.classList.remove('open'); };
+
+// ═══════════════════════════════════════════════════════════
+// ANIMATE
+// ═══════════════════════════════════════════════════════════
+setTimeout(()=>{
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    el.style.transition='width 1.1s cubic-bezier(.4,0,.2,1)';
+    el.style.width = el.dataset.t+'%';
+  });
+  document.querySelectorAll('.ziel-gauge-fill').forEach(el=>{
+    const w=el.style.width; el.style.width='0';
+    setTimeout(()=>el.style.width=w, 80);
+  });
+  document.querySelectorAll('.roi-bar-fill').forEach(el=>{
+    const w=el.style.width; el.style.width='0';
+    setTimeout(()=>{el.style.transition='width 1.4s ease';el.style.width=w;},200);
+  });
+},250);
+</script>
+</body>
+</html>

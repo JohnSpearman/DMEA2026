@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Versorgungssteuerung – adesso</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #ffffff;
+  --text:    #0a0a0a;
+  --gray-lt: #e8e8e8;
+  --gray-md: #777;
+  --blue:    #0070C0;
+  --purple:  #5B2D8E;
+  --teal:    #00C4A7;
+}
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: #0a0a0a;
+}
+body {
+  display: flex; flex-direction: column;
+  align-items: stretch; justify-content: stretch;
+}
+
+/* ━━━ STAGE: full viewport ━━━ */
+#stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  background: var(--bg);
+}
+.slide.active { display: flex; }
+
+/* ━━━ TOPBAR ━━━ */
+.topbar {
+  height: 64px; background: var(--text); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 52px;
+}
+.logo { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: -.4px; }
+.logo b { font-weight: 300; }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.topbar-tag {
+  font-size: 14px; font-weight: 500; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.35);
+}
+.track-pill {
+  font-size: 13px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; padding: 6px 18px; border-radius: 3px; color: #fff;
+}
+.pill-hosp { background: var(--blue); }
+.pill-gkv  { background: var(--purple); }
+.pill-digi { background: var(--teal); }
+.back-btn {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 14px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); cursor: pointer; background: none; border: none;
+  font-family: inherit; transition: color .15s; padding: 8px 0;
+}
+.back-btn:hover { color: rgba(255,255,255,.85); }
+.track-stripe { height: 5px; flex-shrink: 0; }
+.stripe-hosp { background: var(--blue); }
+.stripe-gkv  { background: var(--purple); }
+.stripe-digi { background: var(--teal); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HOME
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#home { flex-direction: column; }
+
+.home-content {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center; padding: 52px 72px 36px;
+}
+.home-eyebrow {
+  font-size: 14px; font-weight: 700; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--blue); margin-bottom: 16px;
+}
+.home-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 80px; line-height: 1.0; color: var(--text); margin-bottom: 22px;
+}
+.home-title em { font-style: italic; color: var(--blue); }
+.home-lead {
+  font-size: 22px; font-weight: 300; color: #555;
+  line-height: 1.6; max-width: 720px;
+}
+.home-claims { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.home-claim {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 22px; font-weight: 400; color: #333; line-height: 1.3;
+}
+.home-claim-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--blue); flex-shrink: 0;
+}
+.home-divider { width: 52px; height: 4px; background: var(--blue); margin-top: 28px; }
+
+/* Tiles */
+.home-tiles {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  height: 188px; flex-shrink: 0;
+  border-top: 1px solid var(--gray-lt);
+}
+.home-tile {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 24px 44px; cursor: pointer;
+  border-right: 1px solid var(--gray-lt);
+  position: relative; overflow: hidden; transition: background .18s;
+}
+.home-tile:last-child { border-right: none; }
+.home-tile::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+}
+.t-hosp::before { background: var(--blue); }
+.t-gkv::before  { background: var(--purple); }
+.t-digi::before { background: var(--teal); }
+.home-tile:hover::before { transform: scaleX(1); }
+.home-tile:hover { background: #f8f8f8; }
+
+.tile-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.t-hosp .tile-label { color: var(--blue); }
+.t-gkv  .tile-label { color: var(--purple); }
+.t-digi .tile-label { color: var(--teal); }
+.tile-title {
+  font-size: 26px; font-weight: 700; color: var(--text);
+  margin-bottom: 6px; line-height: 1.15;
+}
+.tile-desc {
+  font-size: 18px; font-weight: 300; color: var(--gray-md); line-height: 1.4;
+}
+.tile-arrow {
+  position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .15; transition: opacity .18s;
+}
+.t-hosp .tile-arrow { background: var(--blue); }
+.t-gkv  .tile-arrow { background: var(--purple); }
+.t-digi .tile-arrow { background: var(--teal); }
+.home-tile:hover .tile-arrow { opacity: 1; }
+.tile-arrow svg { width: 13px; height: 13px; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   KRANKENHAUS — 3 PHONES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#hosp { flex-direction: column; }
+.hosp-body {
+  flex: 1; display: flex; align-items: stretch; overflow: hidden;
+}
+.phone-col {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 20px 20px;
+  border-right: 1px solid var(--gray-lt);
+}
+.phone-col:last-child { border-right: none; }
+.phone-col:nth-child(2) { background: #f9f9f9; }
+
+.phone-col-label {
+  font-size: 13px; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: 14px; text-align: center;
+}
+
+/* Phone hardware */
+.phone-frame {
+  width: 170px; height: 338px;
+  background: #111; border-radius: 28px;
+  border: 7px solid #2a2a2a;
+  box-shadow: 0 16px 48px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.06);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+.phone-notch {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 52px; height: 16px; background: #111; border-radius: 0 0 12px 12px; z-index: 10;
+}
+.phone-screen {
+  position: absolute; inset: 0; background: var(--bg);
+  border-radius: 22px; overflow: hidden; display: flex; flex-direction: column;
+}
+
+/* App UI inside phone — kept small intentionally (it's a miniature screen) */
+.app-bar {
+  height: 30px; display: flex; align-items: center; padding: 12px 12px 0;
+  justify-content: space-between; flex-shrink: 0;
+}
+.app-time { font-size: 8.5px; font-weight: 700; color: var(--text); }
+.app-icons { font-size: 7.5px; color: var(--text); }
+.app-nav { padding: 8px 12px 7px; flex-shrink: 0; }
+.app-nav-title { font-size: 10px; font-weight: 700; color: #fff; }
+.app-nav-sub   { font-size: 7.5px; color: rgba(255,255,255,.65); margin-top: 1px; }
+.app-content {
+  flex: 1; padding: 9px; overflow: hidden;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.app-card {
+  background: #f8f8f8; border-radius: 7px; padding: 8px 9px;
+  border: 1px solid #eee; flex-shrink: 0;
+}
+.app-card-title { font-size: 8px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.app-card-text  { font-size: 7px; color: #777; line-height: 1.45; }
+.nav-map {
+  background: #e8f4e8; border-radius: 7px; padding: 7px 9px;
+  border: 1px solid #c8e0c8; flex-shrink: 0;
+}
+.nav-path { display: flex; align-items: center; gap: 4px; font-size: 7px; color: #2a6a2a; font-weight: 600; }
+.nav-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.nav-line { height: 1px; flex: 1; background: #2a6a2a; opacity: .4; }
+.nav-step-label { font-size: 6px; color: #555; text-align: center; margin-top: 3px; }
+.result-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 3.5px 0; border-bottom: 1px solid #eee;
+}
+.result-row:last-child { border-bottom: none; }
+.result-name  { font-size: 6.5px; color: #555; }
+.result-badge { font-size: 6.5px; font-weight: 700; padding: 1.5px 5px; border-radius: 3px; color: #fff; }
+.r-ok   { background: #2a7a2a; }
+.r-warn { background: #b85a00; }
+.slot {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid #eee;
+  border-radius: 6px; padding: 5px 7px; flex-shrink: 0;
+}
+.slot-time { font-size: 8px; font-weight: 700; color: var(--blue); width: 32px; }
+.slot-info { flex: 1; font-size: 6.5px; color: #777; line-height: 1.3; }
+.slot-btn  {
+  background: var(--blue); color: #fff; border: none;
+  border-radius: 3px; font-size: 6px; font-weight: 700; padding: 2.5px 6px; cursor: default;
+}
+.slot-btn.taken { background: #e8e8e8; color: #aaa; }
+.app-bottom {
+  height: 32px; border-top: 1px solid #eee;
+  display: flex; justify-content: space-around; align-items: center;
+  flex-shrink: 0;
+}
+.app-bottom-item {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  font-size: 5.5px; color: #bbb;
+}
+.app-bottom-item.active { color: var(--blue); }
+.app-bottom-icon { font-size: 10px; }
+
+/* Caption below phone */
+.phone-caption { margin-top: 18px; text-align: center; }
+.phone-caption-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.phone-caption-text  { font-size: 18px; font-weight: 300; color: var(--gray-md); line-height: 1.45; }
+
+/* Slide footer */
+.slide-foot {
+  height: 44px; border-top: 1px solid var(--gray-lt);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 52px; flex-shrink: 0;
+}
+.sf-label { font-size: 14px; color: #bbb; letter-spacing: .05em; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GKV — EMBEDDED DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#gkv { flex-direction: column; }
+.gkv-body { flex: 1; position: relative; overflow: hidden; }
+#dashboard-frame {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: none; transform-origin: top left;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DIGITAL — §140 SGB V
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#digi { flex-direction: column; }
+.digi-body { flex: 1; display: flex; overflow: hidden; }
+
+/* Left dark panel */
+.digi-left {
+  width: 44%; flex-shrink: 0;
+  background: var(--text); padding: 48px 52px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.digi-left::after {
+  content: '§'; position: absolute; right: -16px; bottom: -24px;
+  font-family: 'DM Serif Display', serif; font-size: 260px; line-height: 1;
+  color: rgba(255,255,255,.04); pointer-events: none;
+}
+.digi-para-label {
+  font-size: 13px; font-weight: 700; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 12px;
+}
+.digi-para-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: 46px; line-height: 1.1; color: #fff; margin-bottom: 24px;
+}
+.digi-para-heading em { font-style: italic; color: var(--teal); }
+.digi-features { display: flex; flex-direction: column; gap: 14px; }
+.digi-feature {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 4px; padding: 16px 18px;
+}
+.digi-feat-line {
+  width: 3px; height: 38px; border-radius: 2px;
+  background: var(--teal); flex-shrink: 0; margin-top: 2px;
+}
+.digi-feat-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.digi-feat-text  { font-size: 16px; font-weight: 300; color: rgba(255,255,255,.55); line-height: 1.45; }
+
+/* Right panel */
+.digi-right {
+  flex: 1; padding: 44px 52px;
+  display: flex; flex-direction: column; justify-content: center; gap: 20px;
+}
+.digi-right-eyebrow {
+  font-size: 13px; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
+}
+.digi-right-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 40px; color: var(--text); line-height: 1.15; margin-bottom: 6px;
+}
+.digi-right-sub {
+  font-size: 22px; font-weight: 300; color: #555;
+  line-height: 1.6; margin-bottom: 8px;
+}
+.partner-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.pcard {
+  background: #fafafa; border: 1px solid var(--gray-lt);
+  border-top: 4px solid var(--teal); border-radius: 3px; padding: 20px 20px 18px;
+}
+.pcard-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px; color: var(--teal); line-height: 1; margin-bottom: 8px;
+}
+.pcard-title {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em;
+}
+.pcard-text { font-size: 15px; font-weight: 300; color: #777; line-height: 1.5; }
+.digi-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--gray-lt); padding-top: 18px;
+}
+.digi-cta-text { font-size: 22px; font-weight: 500; color: var(--text); }
+.digi-cta-btn {
+  background: var(--teal); color: #fff; border: none;
+  padding: 14px 32px; border-radius: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: opacity .15s;
+}
+.digi-cta-btn:hover { opacity: .85; }
+
+/* ━━━ CONTROLS ━━━ */
+#controls {
+  height: 56px; background: #111;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  flex-shrink: 0;
+}
+.c-btn {
+  background: transparent; border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.45); padding: 10px 28px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  border-radius: 3px; transition: all .15s;
+}
+.c-btn:hover:not(:disabled) { border-color: rgba(255,255,255,.4); color: #fff; }
+.c-btn:disabled { opacity: .18; cursor: default; }
+.c-btn.home-c { border-color: rgba(0,112,192,.4); color: rgba(110,185,255,.6); }
+.c-btn.home-c:hover { border-color: var(--blue); color: #8ecfff; }
+#ctrl-info {
+  font-size: 13px; color: rgba(255,255,255,.22); letter-spacing: .1em;
+  min-width: 80px; text-align: center;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MOBILE — ≤ 768px
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 768px) {
+
+  /* Allow scrolling on mobile */
+  html, body { height: auto; overflow: auto; }
+  #stage { overflow: visible; height: auto; }
+  .slide { position: relative; inset: auto; display: none; flex-direction: column; min-height: 100dvh; }
+  .slide.active { display: flex; }
+
+  /* Topbar */
+  .topbar { height: auto; padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
+  .logo { font-size: 22px; }
+  .topbar-tag { font-size: 11px; }
+  .track-pill { font-size: 11px; padding: 4px 12px; }
+  .back-btn { font-size: 12px; }
+  .topbar-right { gap: 10px; }
+  .track-stripe { height: 4px; }
+
+  /* Controls */
+  #controls { height: auto; padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
+  .c-btn { padding: 10px 18px; font-size: 12px; }
+  #ctrl-info { font-size: 12px; min-width: 60px; }
+
+  /* ── HOME ── */
+  .home-content { padding: 32px 24px 20px; }
+  .home-eyebrow { font-size: 11px; margin-bottom: 10px; }
+  .home-title { font-size: 42px; margin-bottom: 14px; }
+  .home-lead { font-size: 17px; }
+  .home-claims { gap: 8px; }
+  .home-claim { font-size: 17px; gap: 10px; }
+  .home-divider { margin-top: 18px; }
+
+  .home-tiles {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .home-tile {
+    padding: 20px 24px;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-lt);
+    min-height: 80px;
+  }
+  .home-tile:last-child { border-bottom: none; }
+  .tile-label { font-size: 10px; margin-bottom: 5px; }
+  .tile-title { font-size: 20px; margin-bottom: 3px; }
+  .tile-desc { font-size: 15px; }
+  .tile-arrow { right: 20px; width: 28px; height: 28px; }
+
+  /* ── KRANKENHAUS ── */
+  .hosp-body {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    gap: 0;
+  }
+  .phone-col {
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-lt);
+  }
+  .phone-col:last-child { border-bottom: none; }
+  .phone-col:nth-child(2) { background: #f9f9f9; }
+  .phone-col-label { font-size: 11px; margin-bottom: 12px; }
+
+  .phone-frame { width: 200px; height: 398px; }
+  .phone-notch { width: 60px; height: 18px; }
+
+  .phone-caption { margin-top: 14px; }
+  .phone-caption-title { font-size: 18px; }
+  .phone-caption-text  { font-size: 15px; }
+
+  .slide-foot { height: auto; padding: 12px 20px; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sf-label { font-size: 12px; }
+
+  /* ── GKV ── */
+  .gkv-body { height: 60vw; min-height: 280px; }
+
+  /* ── DIGITAL ── */
+  .digi-body { flex-direction: column; overflow: visible; }
+  .digi-left {
+    width: 100%; padding: 32px 24px;
+  }
+  .digi-left::after { font-size: 160px; }
+  .digi-para-label { font-size: 11px; }
+  .digi-para-heading { font-size: 32px; margin-bottom: 16px; }
+  .digi-feat-title { font-size: 16px; }
+  .digi-feat-text  { font-size: 14px; }
+  .digi-features { gap: 10px; }
+  .digi-feature { padding: 12px 14px; }
+
+  .digi-right { padding: 28px 24px; gap: 16px; }
+  .digi-right-eyebrow { font-size: 11px; }
+  .digi-right-title { font-size: 28px; }
+  .digi-right-sub { font-size: 17px; }
+
+  .partner-cards { grid-template-columns: 1fr; gap: 10px; }
+  .pcard { padding: 16px; }
+  .pcard-num { font-size: 26px; }
+  .pcard-title { font-size: 13px; }
+  .pcard-text { font-size: 13px; }
+
+  .digi-cta { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .digi-cta-text { font-size: 18px; }
+  .digi-cta-btn { width: 100%; text-align: center; padding: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div class="slide active" id="home">
+  <div class="topbar">
+    <div class="logo">ad<b>esso</b></div>
+    <div class="topbar-tag">Gesundheitswesen · 2025</div>
+  </div>
+
+  <div class="home-content">
+    <div class="home-eyebrow">DMEA 2026</div>
+    <div class="home-title">Versorgungs-<br><em>steuerung</em><br>der Zukunft</div>
+    <div class="home-claims">
+      <div class="home-claim"><div class="home-claim-dot"></div><span>AI-first</span></div>
+      <div class="home-claim"><div class="home-claim-dot"></div><span>Datenschatz nutzen</span></div>
+      <div class="home-claim"><div class="home-claim-dot"></div><span>Partner für Digitalisierung</span></div>
+    </div>
+    <div class="home-divider"></div>
+  </div>
+
+  <div class="home-tiles">
+    <div class="home-tile t-hosp" onclick="goTo('hosp')">
+      <div class="tile-label">Track 1</div>
+      <div class="tile-title">Krankenhäuser</div>
+      <div class="tile-desc">Patientensteuerung per App</div>
+      <div class="tile-arrow">
+        <svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="4 2 9 6.5 4 11"/></svg>
+      </div>
+    </div>
+    <div class="home-tile t-gkv" onclick="goTo('gkv')">
+      <div class="tile-label">Track 2</div>
+      <div class="tile-title">Gesetzliche Krankenkassen</div>
+      <div class="tile-desc">Versorgungssteuerungs-Dashboard</div>
+      <div class="tile-arrow">
+        <svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="4 2 9 6.5 4 11"/></svg>
+      </div>
+    </div>
+    <div class="home-tile t-digi" onclick="goTo('digi')">
+      <div class="tile-label">Track 3</div>
+      <div class="tile-title">Digital-Unternehmen</div>
+      <div class="tile-desc">§ 140a SGB V als Marktchance</div>
+      <div class="tile-arrow">
+        <svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="4 2 9 6.5 4 11"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     KRANKENHAUS
+══════════════════════════════════════ -->
+<div class="slide" id="hosp">
+  <div class="track-stripe stripe-hosp"></div>
+  <div class="topbar">
+    <div class="logo">ad<b>esso</b></div>
+    <div class="topbar-right">
+      <div class="track-pill pill-hosp">Krankenhäuser</div>
+      <button class="back-btn" onclick="goHome()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Übersicht
+      </button>
+    </div>
+  </div>
+
+  <div class="hosp-body">
+
+    <!-- Phone 1: Navigation -->
+    <div class="phone-col">
+      <div class="phone-col-label">01 · Wegführung</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-bar"><div class="app-time">9:24</div><div class="app-icons">●●●● 🔋</div></div>
+          <div class="app-nav" style="background:var(--blue)">
+            <div class="app-nav-title">Mein Weg zur Untersuchung</div>
+            <div class="app-nav-sub">St. Marien-Klinikum · 09:30</div>
+          </div>
+          <div class="app-content">
+            <div class="nav-map">
+              <div style="font-size:7px;font-weight:700;color:#2a6a2a;margin-bottom:6px;">Route aktiv</div>
+              <div class="nav-path">
+                <div class="nav-dot" style="background:#2a6a2a"></div>
+                <div class="nav-line"></div>
+                <div class="nav-dot" style="background:#999"></div>
+                <div class="nav-line"></div>
+                <div class="nav-dot" style="background:var(--blue)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:4px;">
+                <div class="nav-step-label">Parkplatz P2</div>
+                <div class="nav-step-label">Eingang Nord</div>
+                <div class="nav-step-label">Röntgen 2.OG</div>
+              </div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-title" style="color:var(--blue)">Nächster Schritt</div>
+              <div class="app-card-text">Aufzug Ebene 2 → links → blaue Linie folgen</div>
+            </div>
+            <div class="app-card" style="background:#e8f2fb;border-color:#b8d4ee;">
+              <div class="app-card-title">Ihre Untersuchung</div>
+              <div class="app-card-text">CT-Thorax · Raum 2.14 · 09:30</div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-title">Verbleibend</div>
+              <div style="font-size:18px;font-weight:700;color:var(--blue);line-height:1.1">~4 Min.</div>
+            </div>
+          </div>
+          <div class="app-bottom">
+            <div class="app-bottom-item active"><div class="app-bottom-icon">🗺</div>Weg</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">📋</div>Termine</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">📊</div>Befunde</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">👤</div>Profil</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">
+        <div class="phone-caption-title">Wegführung</div>
+        <div class="phone-caption-text">Vom Parkplatz zur<br>richtigen Untersuchung</div>
+      </div>
+    </div>
+
+    <!-- Phone 2: Befunde -->
+    <div class="phone-col">
+      <div class="phone-col-label">02 · Befunde</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-bar"><div class="app-time">11:02</div><div class="app-icons">●●●● 🔋</div></div>
+          <div class="app-nav" style="background:var(--blue)">
+            <div class="app-nav-title">Meine Befunde</div>
+            <div class="app-nav-sub">Letzte Aktualisierung: heute</div>
+          </div>
+          <div class="app-content">
+            <div class="app-card" style="background:#e8f5e8;border-color:#a5d6a7;">
+              <div class="app-card-title" style="color:#2a7a2a">CT-Befund verfügbar</div>
+              <div class="app-card-text">CT-Thorax 12.06.2025 · Dr. Hoffmann informiert</div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-title">Laborwerte</div>
+              <div style="display:flex;flex-direction:column;gap:4px;margin-top:3px;">
+                <div class="result-row"><div class="result-name">Leukozyten</div><div class="result-badge r-ok">Normal</div></div>
+                <div class="result-row"><div class="result-name">CRP</div><div class="result-badge r-warn">Erhöht</div></div>
+                <div class="result-row"><div class="result-name">HbA1c</div><div class="result-badge r-ok">5,8 %</div></div>
+              </div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-title">Nächste Schritte</div>
+              <div class="app-card-text">Befundbesprechung mit Dr. Hoffmann vereinbaren</div>
+            </div>
+          </div>
+          <div class="app-bottom">
+            <div class="app-bottom-item"><div class="app-bottom-icon">🗺</div>Weg</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">📋</div>Termine</div>
+            <div class="app-bottom-item active"><div class="app-bottom-icon">📊</div>Befunde</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">👤</div>Profil</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">
+        <div class="phone-caption-title">Befunde</div>
+        <div class="phone-caption-text">Ergebnisse direkt und<br>verständlich einsehen</div>
+      </div>
+    </div>
+
+    <!-- Phone 3: Termine -->
+    <div class="phone-col">
+      <div class="phone-col-label">03 · Terminbuchung</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-bar"><div class="app-time">11:08</div><div class="app-icons">●●●● 🔋</div></div>
+          <div class="app-nav" style="background:var(--blue)">
+            <div class="app-nav-title">Termin buchen</div>
+            <div class="app-nav-sub">Dr. Hoffmann · Innere Medizin</div>
+          </div>
+          <div class="app-content">
+            <div class="app-card"><div class="app-card-title">Montag, 16. Juni 2025</div></div>
+            <div class="slot">
+              <div class="slot-time">09:00</div>
+              <div class="slot-info">Dr. Hoffmann<br>Befundbesprechung</div>
+              <button class="slot-btn taken">Belegt</button>
+            </div>
+            <div class="slot" style="border-color:#b8d4ee;background:#e8f2fb;">
+              <div class="slot-time">09:30</div>
+              <div class="slot-info">Dr. Hoffmann<br>Befundbesprechung</div>
+              <button class="slot-btn">Buchen</button>
+            </div>
+            <div class="slot">
+              <div class="slot-time">10:00</div>
+              <div class="slot-info">Dr. Hoffmann<br>Befundbesprechung</div>
+              <button class="slot-btn">Buchen</button>
+            </div>
+            <div class="app-card" style="background:#e8f2fb;border-color:#b8d4ee;">
+              <div class="app-card-text">Erinnerung 30 Min. vorher per Push</div>
+            </div>
+          </div>
+          <div class="app-bottom">
+            <div class="app-bottom-item"><div class="app-bottom-icon">🗺</div>Weg</div>
+            <div class="app-bottom-item active"><div class="app-bottom-icon">📋</div>Termine</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">📊</div>Befunde</div>
+            <div class="app-bottom-item"><div class="app-bottom-icon">👤</div>Profil</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">
+        <div class="phone-caption-title">Terminbuchung</div>
+        <div class="phone-caption-text">Folgetermine direkt<br>aus der App buchen</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-foot">
+    <span class="sf-label">adesso SE · Patienten-App · Versorgungssteuerung 2025</span>
+    <span class="sf-label">iOS & Android · HL7 FHIR</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     GKV
+══════════════════════════════════════ -->
+<div class="slide" id="gkv">
+  <div class="track-stripe stripe-gkv"></div>
+  <div class="topbar">
+    <div class="logo">ad<b>esso</b></div>
+    <div class="topbar-right">
+      <div class="track-pill pill-gkv">Gesetzliche Krankenkassen</div>
+      <button class="back-btn" onclick="goHome()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Übersicht
+      </button>
+    </div>
+  </div>
+  <div class="gkv-body">
+    <iframe id="dashboard-frame" src="adesso_bkk_hackyourback_final.html" title="GKV Dashboard"></iframe>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     DIGITAL
+══════════════════════════════════════ -->
+<div class="slide" id="digi">
+  <div class="track-stripe stripe-digi"></div>
+  <div class="topbar">
+    <div class="logo">ad<b>esso</b></div>
+    <div class="topbar-right">
+      <div class="track-pill pill-digi">Digital-Unternehmen</div>
+      <button class="back-btn" onclick="goHome()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Übersicht
+      </button>
+    </div>
+  </div>
+
+  <div class="digi-body">
+    <div class="digi-left">
+      <div class="digi-para-label">Rechtliche Grundlage</div>
+      <div class="digi-para-heading">§&thinsp;140a SGB&thinsp;V —<br><em>Integrierte</em><br>Versorgung</div>
+      <div class="digi-features">
+        <div class="digi-feature">
+          <div class="digi-feat-line"></div>
+          <div>
+            <div class="digi-feat-title">Direkter Kassenvertrag</div>
+            <div class="digi-feat-text">Digital-Angebote ohne KV-Zulassung direkt vergütbar</div>
+          </div>
+        </div>
+        <div class="digi-feature">
+          <div class="digi-feat-line"></div>
+          <div>
+            <div class="digi-feat-title">Sektorenfreie Gestaltung</div>
+            <div class="digi-feat-text">Stationär, ambulant, Reha, Pflege — gemeinsam steuerbar</div>
+          </div>
+        </div>
+        <div class="digi-feature">
+          <div class="digi-feat-line"></div>
+          <div>
+            <div class="digi-feat-title">Pay-for-Outcome</div>
+            <div class="digi-feat-text">Ergebnisqualität statt Einzelleistung als Vergütungsmodell</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="digi-right">
+      <div>
+        <div class="digi-right-eyebrow">adesso als Partner</div>
+        <div class="digi-right-title">Ihr Zugang zur<br>Versorgungssteuerung</div>
+        <p class="digi-right-sub">Technisch, regulatorisch und strategisch —<br>wir kennen die Perspektiven.</p>
+      </div>
+      <div class="partner-cards">
+        <div class="pcard">
+          <div class="pcard-num">01</div>
+          <div class="pcard-title">Vertragsgestaltung</div>
+          <div class="pcard-text">Von der Konzeption bis zum Vertrag mit GKV-Partnern</div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-num">02</div>
+          <div class="pcard-title">TI & FHIR</div>
+          <div class="pcard-text">ePA, KIM, eRezept — tiefgehendes Know-How und Experten</div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-num">03</div>
+          <div class="pcard-title">Netzwerk</div>
+          <div class="pcard-text">langjährige Erfahrung in GKV-Projekten — direkt erreichbar</div>
+        </div>
+      </div>
+      <div class="digi-cta">
+        <div class="digi-cta-text">Gemeinsam den Weg in den Markt gehen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-foot">
+    <span class="sf-label">adesso SE · §&thinsp;140a SGB V · Integrierte Versorgung 2025</span>
+    <span class="sf-label">Alle Angaben rechtlich unverbindlich</span>
+  </div>
+</div>
+
+</div><!-- /stage -->
+
+<div id="controls">
+  <button class="c-btn" id="prevBtn" disabled onclick="navigate(-1)">← Zurück</button>
+  <span id="ctrl-info">Übersicht</span>
+  <button class="c-btn" id="nextBtn" disabled onclick="navigate(1)">Weiter →</button>
+  <button class="c-btn home-c" id="homeBtn" style="display:none" onclick="goHome()">⌂ Übersicht</button>
+</div>
+
+<script>
+const ORDER = ['home','hosp','gkv','digi'];
+let cur = 'home';
+
+function showSlide(id) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  cur = id;
+  if (id === 'gkv') scaleDashboard();
+  updateCtrl();
+}
+
+function scaleDashboard() {
+  const frame = document.getElementById('dashboard-frame');
+  const body  = frame.parentElement;
+  const scale = Math.min(body.offsetWidth / 1440, body.offsetHeight / 900);
+  frame.style.transform       = `scale(${scale})`;
+  frame.style.transformOrigin = 'top left';
+  frame.style.width           = (body.offsetWidth  / scale) + 'px';
+  frame.style.height          = (body.offsetHeight / scale) + 'px';
+}
+
+function goHome()   { showSlide('home'); }
+function goTo(id)   { showSlide(id); }
+function navigate(d){ const i = ORDER.indexOf(cur)+d; if(i>=0&&i<ORDER.length) showSlide(ORDER[i]); }
+
+function updateCtrl() {
+  const isHome = cur==='home';
+  document.getElementById('homeBtn').style.display = isHome ? 'none' : '';
+  const i = ORDER.indexOf(cur);
+  document.getElementById('prevBtn').disabled = i<=0;
+  document.getElementById('nextBtn').disabled = i>=ORDER.length-1;
+  document.getElementById('ctrl-info').textContent =
+    cur==='home'?'Übersicht': cur==='hosp'?'Krankenhäuser': cur==='gkv'?'GKV':'Digital';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') navigate(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   navigate(-1);
+  if(e.key==='Escape') goHome();
+});
+
+updateCtrl();
+</script>
+</body>
+</html>
